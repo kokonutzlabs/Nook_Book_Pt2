@@ -1,158 +1,164 @@
-# Nook_Book_Pt2 interaction logging and system visibility
+# Digital Forensic Analysis of Warehouse Shipment Records
 
 ## Overview
-Nook_Book is a small, controlled web application designed to explore how HTML, PHP, and SQL interact within a basic system environment. While visually themed around *Animal Crossing* and structured like a social media profile, the project’s primary purpose is to serve as a **learning platform for digital forensics, system behavior analysis, and data integrity concepts**.
 
-Version 2 builds upon the baseline established in Version 1 by introducing **interaction logging and system visibility**, while intentionally excluding security controls.
+This project simulates a **digital forensic investigation** of warehouse shipment data, focusing on the detection and reconstruction of **tampered, incomplete, or non-compliant shipment records**.  
 
----
+It is designed to mirror real-world scenarios in logistics and warehouse environments, including **weight manipulation, timestamp alteration, missing audit trails, and SOP/GMP violations**.
 
-## Version 2 Purpose
-The goals of Version 2 are to:
-
-- Introduce system-level logging
-- Improve visibility into user and system behavior
-- Record contextual metadata alongside interactions
-- Preserve raw, unprotected logs for forensic comparison
-- Maintain uninterrupted user experience
-
-This version establishes a **logged but untrusted system state**, which will be analyzed in future versions.
+The project leverages **Python** and **SQLite** to perform reverse engineering of shipment records and generate forensic findings suitable for audits or internal investigations.
 
 ---
 
-## System Scope
+## Objectives
 
-### Included
-- Static HTML profile page
-- User interaction via HTML forms
-- Backend processing using PHP
-- SQL database storage
-- Local execution using XAMPP
-- Interaction logging
-- Page-view logging
-- Timestamped system events
-- IP address and user-agent capture
-
-### Excluded (Intentional)
-- User authentication or sessions
-- Access controls
-- Input sanitization beyond basic handling
-- Log integrity protection
-- Encryption or hashing
-- Audit enforcement
-
-These exclusions are deliberate and documented for educational purposes.
+- Simulate a realistic warehouse shipment database
+- Introduce intentional data manipulation and integrity failures
+- Perform forensic analysis using Python
+- Detect anomalies and SOP/GMP violations
+- Reconstruct event timelines from incomplete or altered data
+- Produce structured forensic findings
 
 ---
 
-## File Structure
+## Technical Scope
 
-### HTML
-- **nook-book.html**  
-  Displays a single villager profile and allows users to submit reactions, votes, or comments.
-
-### PHP
-- **nook-book.php**  
-  Processes form submissions and displays confirmation messages.
-
-- **nook-book-db1.php**  
-  Creates the SQL database.
-
-- **nook-book-conn1.php**  
-  Establishes the database connection.
-
-- **nook-book-setup1.php**  
-  Creates database tables for interactions and logs.
-
-- **nook-book-forms1.php**  
-  Captures user input and inserts interaction records.
-
-- **nook-book-log1.php** *(New in Version 2)*  
-  Records system events such as form submissions and page views, including metadata.
+**Domain:** Warehouse Operations, Logistics, Digital Forensics  
+**Focus Areas:**
+- Shipment ticketing
+- Scalehouse weight records
+- Operator accountability
+- SOP and GMP compliance
+- Data integrity and auditability
 
 ---
 
-## Data Handling
+## Architecture
 
-### Interaction Data
-- Each form submission creates a new record
-- No user identification or authentication
-- Records are never edited or deleted
-- Data represents raw interaction input
+### Database
+- **SQLite** relational database
+- Structured to resemble warehouse shipment systems
 
-### Logging Data
-- Each interaction generates a corresponding log entry
-- Logs capture:
-  - Event type
-  - Page name
-  - Raw submitted data
-  - IP address
-  - User agent
-  - Timestamp
-- Logs are stored in a separate table
-- Logs are not protected from modification or deletion
+### Core Tables
+- `shipments`
+- `weigh_ins`
+- `weigh_outs`
+- `operators`
+- `audit_logs`
 
-This separation supports future forensic comparison between interaction data and system logs.
+### Data Characteristics
+- Timestamped transactions
+- Operator-linked actions
+- Calculated and stored net weights
+- Audit records with intentional gaps
 
 ---
 
-## Environment & Tools
+## Simulated Forensic Scenarios
 
-### Programs
-- Visual Studio Code
-- XAMPP
-- phpMyAdmin
+The dataset includes intentional anomalies such as:
 
-### Languages
-- HTML
-- CSS
-- PHP
-- SQL
+- Modified shipment weights after approval
+- Gross/Tare mismatches resulting in incorrect net weights
+- Duplicate ticket numbers
+- Timestamp manipulation outside authorized shift hours
+- Missing or altered audit log entries
+- Unauthorized operator activity
 
----
-
-## How to Run the Project
-
-### Option 1: Frontend Only
-The project can be viewed via the Neocities page listed in the repository.  
-Backend functionality is unavailable due to hosting limitations.
-
-### Option 2: Full Local Setup (Recommended)
-1. Install XAMPP
-2. Place all project files in a folder inside the `htdocs` directory
-3. Start Apache and MySQL via the XAMPP control panel
-4. Navigate to:  
-   `http://localhost/your-folder-name`
-5. Open `nook-book.html`
+These scenarios replicate **internal fraud, human error, or system misuse** commonly encountered in warehouse environments.
 
 ---
 
-## Forensic Relevance
-Version 2 enables:
+## Forensic Methodology
 
-- Timeline reconstruction
-- Correlation between interactions and logs
-- Identification of missing or altered records
-- Analysis of abnormal system behavior
+The Python forensic tool performs the following steps:
 
-The system intentionally mirrors early-stage applications with limited monitoring and protection.
+1. **Data Ingestion**
+   - Connects to the SQLite database
+   - Extracts shipment, weight, operator, and audit data
+
+2. **Integrity Validation**
+   - Recalculates net weights from gross and tare values
+   - Compares calculated values to stored records
+   - Flags discrepancies
+
+3. **Timeline Reconstruction**
+   - Orders events chronologically
+   - Identifies gaps or inconsistencies in timestamps
+   - Detects post-approval modifications
+
+4. **Compliance Analysis**
+   - Verifies operator authorization
+   - Checks adherence to SOP-required approvals
+   - Identifies GMP-relevant violations
+
+5. **Anomaly Detection**
+   - Flags suspicious or invalid records
+   - Associates anomalies with operators and timestamps
 
 ---
 
-## Planned Future Versions
-- **Version 3:** Simulated incidents and data integrity violations
-- **Version 4:** Forensic investigation and reporting
+## Tools & Technologies
+
+- **Python 3**
+- **SQLite**
+- `sqlite3`
+- `pandas`
+- `datetime`
+- `hashlib` (for record integrity checks)
 
 ---
 
-## Notes
-- Additional HTML content will be added in future updates
-- PHP data handling will be refined without disrupting user experience
-- A separate repository has been created for continued development
+## Output
+
+The tool generates:
+- Console-based forensic findings
+- Structured CSV reports of flagged records
+- Evidence summaries suitable for audits or investigations
+
+Example findings include:
+- Weight inconsistencies
+- Unauthorized record modifications
+- Missing audit trail entries
+- SOP violations by shipment or operator
+
+---
+
+## Use Cases
+
+- Internal warehouse investigations
+- Compliance and audit preparation
+- Digital forensics training
+- Logistics data integrity validation
+
+---
+
+## Limitations
+
+- Dataset is simulated and does not contain real operational data
+- No real-time monitoring (batch analysis only)
+- Focused on internal data integrity rather than network forensics
+
+---
+
+## Future Enhancements
+
+- PDF forensic report generation
+- Role-based access simulation
+- Automated SOP rule configuration
+- Visualization of shipment timelines
+- Hash-based chain-of-custody tracking
+
+---
+
+## Author Background
+
+The project is informed by **five years of experience in scalehouse operations, shipment ticketing, and warehouse logistics**, with applied knowledge of **GMP and SOP-controlled environments**.
 
 ---
 
 ## Disclaimer
-This project is for **educational purposes only**.  
-All security weaknesses are intentional and documented as part of the learning process.
+
+This project is for educational and demonstration purposes only.  
+All data and scenarios are fictional.
 
